@@ -5,10 +5,7 @@ const isObject = obj => {
     return (type === 'function' || type === 'object') && !!obj;
 };
 /**
- * @todo: Add correct propTypes.
- * @todo: Add support for sending in promises in an object.
- *        The prop into the success component will match the key in the object.
- * @todo: Add support for sending in an array with promises and wait for all of them before proceeding.
+ * @todo Add correct propTypes.
  */
 class LoadingContainer extends PureComponent {
     static propTypes = {};
@@ -30,31 +27,40 @@ class LoadingContainer extends PureComponent {
         }
     }
 
-    handle = p => {
+    handle = async p => {
         this.setState({
             status: 0,
             data: null,
         });
 
-        if (p instanceof Promise) {
-            console.log('Promise');
-            p.then(d => {
+        try {
+            if (p instanceof Promise) {
                 this.setState({
                     status: 200,
-                    data: d,
+                    data: await p,
                 });
-            }).catch(e => {
+            } else if (Array.isArray(p)) {
                 this.setState({
-                    status: 500,
-                    data: e,
+                    status: 200,
+                    data: { data: await Promise.all(p) },
                 });
+            } else if (isObject(p)) {
+                const keys = Object.keys(p);
+                const data = {};
+                (await Promise.all(Object.values(p))).forEach((v, i) => {
+                    data[keys[i]] = v;
+                });
+
+                this.setState({
+                    status: 200,
+                    data: { ...data },
+                });
+            }
+        } catch (e) {
+            this.setState({
+                status: 500,
+                data: e,
             });
-        } else if (Array.isArray(p)) {
-            // @todo: Implement.
-            console.log('Array');
-        } else if (isObject(p)) {
-            // @todo: Implement.
-            console.log('Object');
         }
     };
 
