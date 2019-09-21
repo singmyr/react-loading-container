@@ -1,16 +1,22 @@
 import { PureComponent } from 'react';
+import propTypes from 'prop-types';
 
 const isObject = obj => {
     const type = typeof obj;
     return (type === 'function' || type === 'object') && !!obj;
 };
+
 /**
- * @todo Add correct propTypes.
+ * @todo Add correct documentation for this container.
  */
 class LoadingContainer extends PureComponent {
-    static propTypes = {};
-
-    static defaultProps = {};
+    static propTypes = {
+        promise: propTypes.oneOfType([propTypes.array, propTypes.func, propTypes.object]).isRequired,
+        success: propTypes.func.isRequired,
+        error: propTypes.func,
+        loading: propTypes.func,
+        placeholder: propTypes.func,
+    };
 
     state = {
         status: null,
@@ -45,6 +51,9 @@ class LoadingContainer extends PureComponent {
                     data: { data: await Promise.all(p) },
                 });
             } else if (isObject(p)) {
+                // This works but I'm not sure about this solution.
+                // I believe this can be improved, but that is for another day.
+                // Need to measure it to be sure.
                 const keys = Object.keys(p);
                 const data = {};
                 (await Promise.all(Object.values(p))).forEach((v, i) => {
@@ -65,18 +74,18 @@ class LoadingContainer extends PureComponent {
     };
 
     render() {
-        const { render, promise, placeholder, loading, success, error, ...props } = this.props;
+        const { promise, placeholder, loading, success, error, ...props } = this.props;
         const { status, data = {} } = this.state;
 
         switch (status) {
             case 0:
-                return loading({ ...props });
+                return (loading && loading({ ...props })) || null;
             case 200:
-                return success({ ...data, ...props });
+                return (success && success({ ...data, ...props })) || null;
             case 500:
-                return error({ error: data, ...props });
+                return (error && error({ error: data, ...props })) || null;
             default:
-                return placeholder({ ...props });
+                return (placeholder && placeholder({ ...props })) || null;
         }
     }
 }
