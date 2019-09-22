@@ -1,6 +1,6 @@
 {
     "name": "react-loading-container",
-    "version": "1.0.0-alpha",
+    "version": "1.0.1-alpha",
     "description": "An easy to use loading container controlled with promises.",
     "module": "dist/index.es.js",
     "main": "dist/index.js",

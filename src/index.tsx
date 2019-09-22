@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import propTypes from 'prop-types';
 
 const isObject = (obj: any): boolean => {
@@ -15,6 +15,7 @@ interface LoadingContainerProps {
 };
 
 interface LoadingContainerState {
+    loading: boolean
     status: number|null,
     data: any,
 }
@@ -32,6 +33,7 @@ class LoadingContainer extends React.Component<LoadingContainerProps, LoadingCon
     };
 
     readonly state: Readonly<LoadingContainerState> = {
+        loading: false,
         status: null,
         data: null,
     }
@@ -52,19 +54,20 @@ class LoadingContainer extends React.Component<LoadingContainerProps, LoadingCon
         }
 
         this.setState({
-            status: 0,
-            data: null,
+            loading: true,
         });
 
         try {
             if (p instanceof Promise) {
                 this.setState({
-                    status: 200,
+                    loading: false,
+                    status: 1,
                     data: await p,
                 });
             } else if (Array.isArray(p)) {
                 this.setState({
-                    status: 200,
+                    loading: false,
+                    status: 1,
                     data: { data: await Promise.all(p) },
                 });
             } else if (isObject(p)) {
@@ -84,32 +87,30 @@ class LoadingContainer extends React.Component<LoadingContainerProps, LoadingCon
                 });
 
                 this.setState({
-                    status: 200,
+                    loading: false,
+                    status: 1,
                     data: { ...data },
                 });
             }
         } catch (e) {
             this.setState({
-                status: 500,
+                loading: false,
+                status: 0,
                 data: e,
             });
         }
     };
 
     render() {
-        const { promise, placeholder, loading, success, error, ...props } = this.props;
-        const { status, data = {} } = this.state;
+        const { promise, placeholder: Placeholder, loading: Loading, success: Success, error: Error, ...props } = this.props;
+        const { loading, status, data = {} } = this.state;
 
-        switch (status) {
-            case 0:
-                return (loading && loading({ ...props })) || null;
-            case 200:
-                return (success && success({ ...data, ...props })) || null;
-            case 500:
-                return (error && error({ error: data, ...props })) || null;
-            default:
-                return (placeholder && placeholder({ ...props })) || null;
-        }
+        return (
+            <Fragment>
+                {loading && Loading && <Loading {...props } />}
+                {status === null ? <Placeholder { ...props } /> : (status === 1 ? Success && <Success {...data} {...props } /> : Error && <Error error={data} {...props } />)}
+            </Fragment>
+        )
     }
 }
 
