@@ -108,7 +108,7 @@ class LoadingContainer extends React.Component<LoadingContainerProps, LoadingCon
         return (
             <Fragment>
                 {loading && Loading && <Loading {...props } />}
-                {status === null ? <Placeholder { ...props } /> : (status === 1 ? Success && <Success {...data} {...props } /> : Error && <Error error={data} {...props } />)}
+                {status === null ? Placeholder && <Placeholder { ...props } /> : (status === 1 ? Success && <Success {...data} {...props } /> : Error && <Error error={data} {...props } />)}
             </Fragment>
         )
     }
