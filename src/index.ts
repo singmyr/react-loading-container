@@ -1,15 +1,28 @@
-import { PureComponent } from 'react';
-import propTypes from 'prop-types';
+import * as React from 'react';
+import * as propTypes from 'prop-types';
 
-const isObject = obj => {
+const isObject = (obj: any): boolean => {
     const type = typeof obj;
     return (type === 'function' || type === 'object') && !!obj;
 };
 
+interface LoadingContainerProps {
+    promise: any,
+    placeholder: Function,
+    loading: Function,
+    success: Function,
+    error: Function,
+};
+
+interface LoadingContainerState {
+    status: number|null,
+    data: any,
+}
+
 /**
  * @todo Add correct documentation for this container.
  */
-class LoadingContainer extends PureComponent {
+class LoadingContainer extends React.Component<LoadingContainerProps, LoadingContainerState> {
     static propTypes = {
         promise: propTypes.oneOfType([propTypes.array, propTypes.func, propTypes.object]).isRequired,
         success: propTypes.func.isRequired,
@@ -18,22 +31,22 @@ class LoadingContainer extends PureComponent {
         placeholder: propTypes.func,
     };
 
-    state = {
+    readonly state: Readonly<LoadingContainerState> = {
         status: null,
         data: null,
-    };
+    }
 
     componentDidMount() {
         this.handle(this.props.promise);
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: LoadingContainerProps) {
         if (prevProps.promise !== this.props.promise) {
             this.handle(this.props.promise);
         }
     }
 
-    handle = async p => {
+    handle = async (p: any) => {
         this.setState({
             status: 0,
             data: null,
@@ -55,8 +68,14 @@ class LoadingContainer extends PureComponent {
                 // I believe this can be improved, but that is for another day.
                 // Need to measure it to be sure.
                 const keys = Object.keys(p);
-                const data = {};
-                (await Promise.all(Object.values(p))).forEach((v, i) => {
+                const data: { [key: string]: any } = {};
+                const promises = [];
+                for (let k in p) {
+                    if (p.hasOwnProperty(k)) {
+                        promises.push(p[k]);
+                    }
+                }
+                (await Promise.all(promises)).forEach((v, i) => {
                     data[keys[i]] = v;
                 });
 

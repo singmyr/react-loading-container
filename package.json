@@ -1,0 +1,43 @@
+{
+    "name": "react-loading-container",
+    "version": "1.0.0-beta",
+    "description": "An easy to use loading container controlled with promises.",
+    "module": "dist/index.es.js",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "rollup -c",
+        "watch": "rollup -cw",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "files": [
+        "dist/*"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/singmyr/react-loading-container.git"
+    },
+    "types": "dist/index.d.ts",
+    "keywords": [
+        "react",
+        "loading",
+        "container"
+    ],
+    "author": "Mattias Singmyr <mattias@singmyr.io>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/singmyr/react-loading-container/issues"
+    },
+    "homepage": "https://github.com/singmyr/react-loading-container#readme",
+    "devDependencies": {
+        "@types/react": "^16.9.2",
+        "react": "^16.9.0",
+        "rollup": "^1.21.4",
+        "rollup-plugin-terser": "^5.1.2",
+        "rollup-plugin-typescript2": "^0.24.2",
+        "typescript": "^3.6.3"
+    },
+    "peerDependencies": {
+        "react": "^16.9.0",
+        "prop-types": "15.7.2"
+    }
+}
