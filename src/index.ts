@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as propTypes from 'prop-types';
+import React from 'react';
+import propTypes from 'prop-types';
 
 const isObject = (obj: any): boolean => {
     const type = typeof obj;
@@ -24,8 +24,8 @@ interface LoadingContainerState {
  */
 class LoadingContainer extends React.Component<LoadingContainerProps, LoadingContainerState> {
     static propTypes = {
-        promise: propTypes.oneOfType([propTypes.array, propTypes.func, propTypes.object]).isRequired,
-        success: propTypes.func.isRequired,
+        promise: propTypes.oneOfType([propTypes.array, propTypes.func, propTypes.object]),
+        success: propTypes.func,
         error: propTypes.func,
         loading: propTypes.func,
         placeholder: propTypes.func,
@@ -47,6 +47,10 @@ class LoadingContainer extends React.Component<LoadingContainerProps, LoadingCon
     }
 
     handle = async (p: any) => {
+        if (!p) {
+            return;
+        }
+
         this.setState({
             status: 0,
             data: null,

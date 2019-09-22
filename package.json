@@ -29,15 +29,29 @@
     },
     "homepage": "https://github.com/singmyr/react-loading-container#readme",
     "devDependencies": {
+        "@babel/core": "^7.6.0",
+        "@babel/plugin-proposal-class-properties": "^7.5.5",
+        "@babel/preset-env": "^7.6.0",
+        "@babel/preset-react": "^7.0.0",
+        "@babel/preset-typescript": "^7.6.0",
+        "@testing-library/react": "^9.1.4",
         "@types/react": "^16.9.2",
+        "core-js": "^3.2.1",
+        "jest": "^24.9.0",
         "react": "^16.9.0",
+        "react-dom": "^16.9.0",
         "rollup": "^1.21.4",
         "rollup-plugin-terser": "^5.1.2",
         "rollup-plugin-typescript2": "^0.24.2",
         "typescript": "^3.6.3"
     },
     "peerDependencies": {
-        "react": "^16.9.0",
-        "prop-types": "15.7.2"
+        "prop-types": "15.7.2",
+        "react": "^16.9.0"
+    },
+    "jest": {
+        "setupFilesAfterEnv": [
+            "./setupTests.js"
+        ]
     }
 }
