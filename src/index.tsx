@@ -21,15 +21,23 @@ interface LoadingContainerState {
 }
 
 /**
- * @todo Add correct documentation for this container.
+ * Container that renders different components depending on the state of the promise(s) supplied.
+ * 
+ * @version 1.1.0-alpha
+ * @author [Mattias Singmyr](https://github.com/singmyr)
  */
 class LoadingContainer extends React.Component<LoadingContainerProps, LoadingContainerState> {
     static propTypes = {
+        /** Component that will be rendered once the promise(s) has been fulfilled. */
+        success: propTypes.oneOfType([propTypes.func, propTypes.node, propTypes.element]),
+        /** Promise(s) that will determine the state of the container. */
         promise: propTypes.oneOfType([propTypes.array, propTypes.func, propTypes.object]),
-        success: propTypes.func,
-        error: propTypes.func,
-        loading: propTypes.func,
-        placeholder: propTypes.func,
+        /** Component that will be rendered in the case of rejection or exception. */
+        error: propTypes.oneOfType([propTypes.func, propTypes.node, propTypes.element]),
+        /** Component that will be rendered prior to the promise(s) being fulfilled for the first time. */
+        placeholder: propTypes.oneOfType([propTypes.func, propTypes.node, propTypes.element]),
+        /** Component that will be rendered simultaneously as any of placeholder/success/error while the promise(s) is being fulfilled. */
+        loading: propTypes.oneOfType([propTypes.func, propTypes.node, propTypes.element]),
     };
 
     readonly state: Readonly<LoadingContainerState> = {
@@ -102,13 +110,13 @@ class LoadingContainer extends React.Component<LoadingContainerProps, LoadingCon
     };
 
     render() {
-        const { promise, placeholder: Placeholder, loading: Loading, success: Success, error: Error, ...props } = this.props;
+        const { placeholder: Placeholder, loading: Loading, success: Success, error: Error } = this.props;
         const { loading, status, data = {} } = this.state;
 
         return (
             <Fragment>
-                {loading && Loading && <Loading {...props } />}
-                {status === null ? Placeholder && <Placeholder { ...props } /> : (status === 1 ? Success && <Success {...data} {...props } /> : Error && <Error error={data} {...props } />)}
+                {loading && Loading && <Loading />}
+                {status === null ? Placeholder && <Placeholder /> : (status ? Success && <Success {...data} /> : Error && <Error error={data} />)}
             </Fragment>
         )
     }
